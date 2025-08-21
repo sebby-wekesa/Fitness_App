@@ -1,0 +1,21 @@
+{% extends base.htmml %}
+
+{% block title %}
+    FitTrack - Home
+{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1>Welcome to FitTrack</h1>
+    <p>Your personal fitness companion.</p>
+    <a href="{% url 'workouts' %}" class="btn btn-primary">View Workouts</a>
+    <a href="{% url 'nutrition' %}" class="btn btn-secondary">Nutrition Tips</a>
+</div>
+{% endblock %}
+{% load static %}
+
+{% endblock %}
+
+{% block body%}
+    
+{% endblock %}
