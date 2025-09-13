@@ -1,0 +1,212 @@
+<!-- workouts/templates/workouts/index.html -->
+{% extends 'workouts/base.html' %}
+
+{% block content %}
+<div class="row">
+    <!-- Hero Section -->
+    <div class="col-12 mb-5">
+        <div class="p-5 bg-primary text-white rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-4">Welcome to FitTrack</h1>
+                <p class="lead">Your personal fitness companion for tracking workouts, building plans, and achieving your fitness goals.</p>
+                {% if not user.is_authenticated %}
+                <a class="btn btn-light btn-lg mt-3" href="{% url 'workouts:register' %}" role="button">Get Started Today</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Main Content -->
+    <div class="col-md-8">
+        {% if user.is_authenticated %}
+        <!-- Dashboard for logged in users -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2>Your Fitness Dashboard</h2>
+                <p class="text-muted">Welcome back, {{ user.username }}! Here's an overview of your fitness journey.</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Start Workout</h5>
+                        <p class="card-text">Begin a new training session</p>
+                        <a href="{% url 'workouts:start_session' %}" class="btn btn-primary">Start Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Create Workout</h5>
+                        <p class="card-text">Add a new exercise to library</p>
+                        <a href="{% url 'workouts:create_workout' %}" class="btn btn-primary">Create</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Build Plan</h5>
+                        <p class="card-text">Design a workout program</p>
+                        <a href="{% url 'workouts:create_workoutplan' %}" class="btn btn-primary">Build</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3>Your Recent Activity</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="text-center text-muted py-4">
+                            Your workout sessions will appear here once you start tracking.
+                            <br>
+                            <a href="{% url 'workouts:start_session' %}">Start your first session</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Features for non-authenticated users -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2>Why Choose FitTrack?</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Track Workouts</h5>
+                        <p class="card-text">Log your exercises, sets, reps, and weights to monitor your progress over time.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Create Plans</h5>
+                        <p class="card-text">Build custom workout plans tailored to your goals and fitness level.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Follow Demonstrations</h5>
+                        <p class="card-text">Access exercise videos to ensure proper form and technique.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Monitor Progress</h5>
+                        <p class="card-text">Rate your sessions and track improvements in your fitness journey.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-md-4">
+        {% if user.is_authenticated %}
+        <!-- User Stats -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Your Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h6>Workouts</h6>
+                        <h4 class="text-primary">0</h4>
+                    </div>
+                    <div class="col-6">
+                        <h6>Plans</h6>
+                        <h4 class="text-primary">0</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Public Workout Plans -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Popular Workout Plans</h5>
+            </div>
+            <div class="card-body">
+                {% if public_plans %}
+                <div class="list-group">
+                    {% for plan in public_plans %}
+                    <a href="{% url 'workouts:workoutplan_detail' plan.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ plan.name }}</h6>
+                            <small class="text-muted">{{ plan.get_difficulty_display }}</small>
+                        </div>
+                        <p class="mb-1">{{ plan.description|truncatewords:10 }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No public plans available yet.</p>
+                {% endif %}
+                <a href="{% url 'workouts:workoutplan_list' %}" class="btn btn-sm btn-outline-primary mt-3">View All Plans</a>
+            </div>
+        </div>
+
+        <!-- Recent Workouts -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Exercise Library</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_workouts %}
+                <div class="list-group">
+                    {% for workout in recent_workouts %}
+                    <a href="{% url 'workouts:workout_detail' workout.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ workout.name }}</h6>
+                        </div>
+                        <p class="mb-1">{{ workout.description|truncatewords:8 }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No workouts available yet.</p>
+                {% endif %}
+                <a href="{% url 'workouts:workout_list' %}" class="btn btn-sm btn-outline-primary mt-3">Browse Exercises</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+<!-- Call to Action Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="p-5 bg-light rounded-3">
+            <div class="container-fluid py-3 text-center">
+                <h2>Ready to Transform Your Fitness Journey?</h2>
+                <p class="lead">Join thousands of users who are achieving their fitness goals with FitTrack</p>
+                <a class="btn btn-primary btn-lg mt-2" href="{% url 'workouts:register' %}" role="button">Sign Up Now</a>
+                <p class="mt-3">Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
