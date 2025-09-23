@@ -102,3 +102,4 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'workouts/registration/register.html', {'form': form})
+
