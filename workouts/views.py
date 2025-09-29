@@ -89,6 +89,7 @@ def session_detail(request, pk):
         'form': form
     })
 
+# workouts/views.py
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -98,7 +99,7 @@ def register(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('index')
+            return redirect('workouts:index')  # Use namespaced URL
     else:
         form = UserCreationForm()
     return render(request, 'workouts/registration/register.html', {'form': form})
