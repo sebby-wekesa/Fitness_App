@@ -19,7 +19,7 @@ class Workout(models.Model):
     description = models.TextField()
     muscle_groups = models.ManyToManyField(MuscleGroup)
     demonstration_video_url = models.URLField(blank=True, null=True)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='workouts')
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
@@ -36,7 +36,7 @@ class WorkoutPlan(models.Model):
     ]
     name = models.CharField(max_length=200)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_plans')
-    workouts = models.ManyToManyField(Workout, through='WorkoutPlanItem')
+    workouts = models.ManyToManyField(Workout, through='WorkoutPlanItem', related_name='plans')
     description = models.TextField()
     difficulty = models.CharField(max_length=1, choices=DIFFICULTY_CHOICES, default='B')
     is_public = models.BooleanField(default=False)
@@ -49,7 +49,7 @@ class WorkoutPlan(models.Model):
         ordering = ['-created_at']
 
 class WorkoutPlanItem(models.Model):
-    workout_plan = models.ForeignKey(WorkoutPlan, on_delete=models.CASCADE)
+    workout_plan = models.ForeignKey(WorkoutPlan, on_delete=models.CASCADE, related_name='items')
     workout = models.ForeignKey(Workout, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=0)
     sets = models.PositiveIntegerField(default=3)
@@ -57,10 +57,11 @@ class WorkoutPlanItem(models.Model):
     
     class Meta:
         ordering = ['order']
+        unique_together = [('workout_plan', 'order')]
 
 class WorkoutSession(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    workout_plan = models.ForeignKey(WorkoutPlan, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sessions')
+    workout_plan = models.ForeignKey(WorkoutPlan, on_delete=models.SET_NULL, null=True, blank=True, related_name='sessions')
     date = models.DateTimeField(default=timezone.now)
     notes = models.TextField(blank=True)
     rating = models.PositiveSmallIntegerField(

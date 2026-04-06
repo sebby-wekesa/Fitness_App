@@ -1,6 +1,61 @@
 {% extends 'workouts/base.html' %}
 
+{% block title %}Create Workout Plan | FitTrack{% endblock %}
+{% block heading %}
+<div class="page-heading">
+    <h1 class="h3">Create Workout Plan</h1>
+    <p class="text-muted">Assemble workouts into a plan that you can reuse.</p>
+</div>
+{% endblock %}
 
 {% block content %}
-    <p>create a workout plan</p>
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="mb-3">
+                        {{ form.name.label_tag }}
+                        {{ form.name }}
+                        {{ form.name.errors }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label_tag }}
+                        {{ form.description }}
+                        {{ form.description.errors }}
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.difficulty.label_tag }}
+                                {{ form.difficulty }}
+                                {{ form.difficulty.errors }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mt-4 pt-1">
+                                {{ form.is_public }}
+                                {{ form.is_public.label_tag }}
+                                {{ form.is_public.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Select Workouts</label>
+                        <div class="border rounded-3 p-3 bg-white">
+                            {{ form.workouts }}
+                        </div>
+                        {{ form.workouts.errors }}
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">Save Plan</button>
+                        <a href="{% url 'workouts:workoutplan_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

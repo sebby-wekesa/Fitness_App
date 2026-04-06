@@ -1,7 +1,44 @@
 {% extends 'workouts/base.html' %}
 
-{% block heading %} Create Workout {% endblock %}
+{% block title %}Create Workout | FitTrack{% endblock %}
+{% block heading %}
+<div class="page-heading">
+    <h1 class="h3">Create Workout</h1>
+    <p class="text-muted">Build a new exercise entry for your workout library.</p>
+</div>
+{% endblock %}
 
 {% block content %}
-    <p>create a workout</p>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-3">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+            <div class="mb-3">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+            <div class="mb-3">
+                {{ form.muscle_groups.label_tag }}
+                {{ form.muscle_groups }}
+                {{ form.muscle_groups.errors }}
+            </div>
+            <div class="mb-3">
+                {{ form.demonstration_video_url.label_tag }}
+                {{ form.demonstration_video_url }}
+                {{ form.demonstration_video_url.errors }}
+            </div>
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">Save Workout</button>
+                <a href="{% url 'workouts:workout_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

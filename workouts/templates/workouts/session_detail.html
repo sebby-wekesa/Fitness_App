@@ -1,0 +1,81 @@
+{% extends 'workouts/base.html' %}
+
+{% block title %}Session Details | FitTrack{% endblock %}
+{% block heading %}
+<div class="page-heading">
+    <h1 class="h3">Session Details</h1>
+    <p class="text-muted mb-0">Review your workout session and log new sets.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <p class="text-muted">Session started: {{ session.date|date:'F j, Y, g:i a' }}</p>
+                <p><strong>Plan:</strong> {% if session.workout_plan %}<a href="{% url 'workouts:workoutplan_detail' session.workout_plan.pk %}">{{ session.workout_plan.name }}</a>{% else %}No plan selected{% endif %}</p>
+                {% if session.notes %}
+                <div class="mb-3">
+                    <h5>Notes</h5>
+                    <p>{{ session.notes }}</p>
+                </div>
+                {% endif %}
+                {% if session.rating %}
+                <p><strong>Rating:</strong> {{ session.rating }} / 5</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Add a Set</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="mb-3">
+                        {{ form.workout.label_tag }}
+                        {{ form.workout }}
+                        {{ form.workout.errors }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.weight_kg.label_tag }}
+                        {{ form.weight_kg }}
+                        {{ form.weight_kg.errors }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.reps.label_tag }}
+                        {{ form.reps }}
+                        {{ form.reps.errors }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Set</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Sets</h5>
+            </div>
+            <div class="card-body">
+                {% if session.sets.exists %}
+                <ul class="list-group list-group-flush">
+                    {% for set in session.sets.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <div>
+                            <strong>{{ set.order }}. {{ set.workout.name }}</strong>
+                            <p class="mb-0 text-muted">{{ set.reps }} reps{% if set.weight_kg %} · {{ set.weight_kg }} kg{% endif %}</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted mb-0">No sets logged for this session yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

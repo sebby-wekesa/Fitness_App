@@ -1,7 +1,49 @@
 {% extends 'workouts/base.html' %}
 
-{% block heading %} Workout plan datail {% endblock %}
+{% block title %}{{ plan.name }} | FitTrack{% endblock %}
+{% block heading %}
+<div class="page-heading">
+    <h1 class="h3">{{ plan.name }}</h1>
+    <p class="text-muted mb-0">{{ plan.description }}</p>
+</div>
+{% endblock %}
 
 {% block content %}
-    <p>My workout plan details ></p>
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge bg-primary">{{ plan.get_difficulty_display }}</span>
+                    <span class="badge bg-{{ 'success' if plan.is_public else 'secondary' }}">{% if plan.is_public %}Public{% else %}Private{% endif %}</span>
+                </div>
+                <p class="text-muted mb-0">Created by: {{ plan.creator.username }}</p>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Plan Workouts</h5>
+            </div>
+            <div class="card-body">
+                {% if plan.items.exists %}
+                <ul class="list-group list-group-flush">
+                    {% for item in plan.items.all %}
+                    <li class="list-group-item py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ item.order }}. {{ item.workout.name }}</strong>
+                                <p class="mb-1 text-muted">{{ item.workout.description|truncatewords:18 }}</p>
+                            </div>
+                            <span class="badge bg-secondary">{{ item.sets }} x {{ item.reps }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="alert alert-info mb-0">No workouts in this plan yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

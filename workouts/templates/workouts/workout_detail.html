@@ -1,7 +1,41 @@
 {% extends 'workouts/base.html' %}
 
-
+{% block title %}{{ workout.name }} | FitTrack{% endblock %}
+{% block heading %}
+<div class="page-heading">
+    <h1 class="h3">{{ workout.name }}</h1>
+    <p class="text-muted mb-0">Exercise detail and muscle group overview.</p>
+</div>
+{% endblock %}
 
 {% block content %}
-    <p>Workout Details></p>
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <p>{{ workout.description }}</p>
+                {% if workout.demonstration_video_url %}
+                <a href="{{ workout.demonstration_video_url }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">View Demonstration</a>
+                {% endif %}
+                <p class="text-muted mt-3">Created by: {{ workout.created_by.username if workout.created_by else 'Unknown' }}</p>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Muscle Groups</h5>
+            </div>
+            <div class="card-body">
+                {% if workout.muscle_groups.exists %}
+                <div class="d-flex flex-wrap gap-2">
+                    {% for group in workout.muscle_groups.all %}
+                    <span class="badge bg-secondary">{{ group.name }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No muscle groups set for this workout.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
