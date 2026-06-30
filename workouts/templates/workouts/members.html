@@ -1,0 +1,57 @@
+{% extends 'workouts/base.html' %}
+
+{% block title %}Members | FitTrack{% endblock %}
+
+{% block heading %}
+<section class="page-hero mb-5" aria-labelledby="members-title">
+    <div class="page-hero-copy">
+        <span class="eyebrow">Member area</span>
+        <h1 id="members-title">Members</h1>
+        <p>Members can manage workouts, build reusable plans, and keep every training session tied to real progress.</p>
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+            <a class="btn btn-primary btn-lg" href="{% url 'workouts:start_session' %}">
+                <i class="fas fa-stopwatch me-2"></i>Start Session
+            </a>
+            {% else %}
+            <a class="btn btn-primary btn-lg" href="{% url 'workouts:register' %}">
+                <i class="fas fa-user-plus me-2"></i>Become a Member
+            </a>
+            {% endif %}
+            <a class="btn btn-outline-light btn-lg" href="{% url 'login' %}">
+                <i class="fas fa-right-to-bracket me-2"></i>Member Login
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="content-band">
+    <div class="feature-grid">
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-dumbbell"></i></span>
+            <h2>Workout Library</h2>
+            <p>Keep exercise entries organized with descriptions, muscle groups, and demonstration links.</p>
+        </article>
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-layer-group"></i></span>
+            <h2>Reusable Plans</h2>
+            <p>Turn favorite training structures into plans that can be repeated and refined.</p>
+        </article>
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-stopwatch"></i></span>
+            <h2>Session Logs</h2>
+            <p>Record work as it happens, from warmup sets to top sets and notes.</p>
+        </article>
+    </div>
+</section>
+
+<section class="content-band">
+    <div class="trial-callout">
+        <h2>Not a member yet?</h2>
+        <p>Use the 3-day free trial to test the training floor, then keep your workouts organized inside FitTrack.</p>
+        <a class="btn btn-light btn-lg" href="{% url 'workouts:free_trial' %}">Claim 3 Day Free Trial</a>
+    </div>
+</section>
+{% endblock %}

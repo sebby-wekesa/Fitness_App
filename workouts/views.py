@@ -16,6 +16,26 @@ def index(request):
     })
 
 
+def equipment(request):
+    return render(request, 'workouts/equipment.html')
+
+
+def coaching(request):
+    return render(request, 'workouts/coaching.html')
+
+
+def members(request):
+    return render(request, 'workouts/members.html')
+
+
+def facilities(request):
+    return render(request, 'workouts/facilities.html')
+
+
+def free_trial(request):
+    return render(request, 'workouts/free_trial.html')
+
+
 def workout_list(request):
     workouts = Workout.objects.all()
     return render(request, 'workouts/workout_list.html', {'workouts': workouts})

@@ -1,0 +1,64 @@
+{% extends 'workouts/base.html' %}
+
+{% block title %}Coaching | FitTrack{% endblock %}
+
+{% block heading %}
+<section class="page-hero mb-5" aria-labelledby="coaching-title">
+    <div class="page-hero-copy">
+        <span class="eyebrow">Guided training</span>
+        <h1 id="coaching-title">Coaching</h1>
+        <p>Pair structured programming with practical session notes so every workout has a purpose before you touch the first plate.</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="{% url 'workouts:free_trial' %}">
+                <i class="fas fa-calendar-check me-2"></i>Try 3 Days
+            </a>
+            <a class="btn btn-outline-light btn-lg" href="{% url 'workouts:workoutplan_list' %}">
+                <i class="fas fa-clipboard-list me-2"></i>View Plans
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="content-band">
+    <div class="feature-grid">
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-user-check"></i></span>
+            <h2>Form Focus</h2>
+            <p>Use demonstrations and coach notes to keep technique consistent from set to set.</p>
+        </article>
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-route"></i></span>
+            <h2>Programming</h2>
+            <p>Build plans around goals, difficulty, movement patterns, and realistic weekly volume.</p>
+        </article>
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-chart-line"></i></span>
+            <h2>Accountability</h2>
+            <p>Start sessions, record performance, and make the next training decision with context.</p>
+        </article>
+    </div>
+</section>
+
+<section class="content-band">
+    <div class="stat-grid">
+        <div class="stat-box">
+            <strong>01</strong>
+            <span>Assess movement</span>
+        </div>
+        <div class="stat-box">
+            <strong>02</strong>
+            <span>Build plan</span>
+        </div>
+        <div class="stat-box">
+            <strong>03</strong>
+            <span>Log sessions</span>
+        </div>
+        <div class="stat-box">
+            <strong>04</strong>
+            <span>Adjust load</span>
+        </div>
+    </div>
+</section>
+{% endblock %}

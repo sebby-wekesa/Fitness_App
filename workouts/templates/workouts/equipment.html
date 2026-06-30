@@ -1,0 +1,59 @@
+{% extends 'workouts/base.html' %}
+
+{% block title %}Equipment | FitTrack{% endblock %}
+
+{% block heading %}
+<section class="page-hero mb-5" aria-labelledby="equipment-title">
+    <div class="page-hero-copy">
+        <span class="eyebrow">Strength floor</span>
+        <h1 id="equipment-title">Equipment</h1>
+        <p>Train around a focused setup for strength work, conditioning, and repeatable progress tracking.</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="{% url 'workouts:free_trial' %}">
+                <i class="fas fa-ticket-alt me-2"></i>Start 3 Day Trial
+            </a>
+            <a class="btn btn-outline-light btn-lg" href="{% url 'workouts:workout_list' %}">
+                <i class="fas fa-dumbbell me-2"></i>Browse Workouts
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="content-band">
+    <div class="feature-grid">
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-weight-hanging"></i></span>
+            <h2>Free Weights</h2>
+            <p>Dumbbells, barbells, plates, and bench setups for progressive strength blocks.</p>
+        </article>
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-grip-lines"></i></span>
+            <h2>Cable Stations</h2>
+            <p>Accessory work, unilateral training, and repeatable movement patterns for every plan.</p>
+        </article>
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-heartbeat"></i></span>
+            <h2>Conditioning</h2>
+            <p>Cardio and finishers for warmups, engine work, and measured session effort.</p>
+        </article>
+    </div>
+</section>
+
+<section class="content-band">
+    <div class="split-panel">
+        <div class="split-panel-media" role="img" aria-label="Dark strength training floor"></div>
+        <div class="split-panel-copy">
+            <span class="eyebrow">Built for tracking</span>
+            <h2>Every station supports a logged session.</h2>
+            <p>Use FitTrack to turn the floor into a repeatable training system: pick a plan, log each set, and keep the next session clear.</p>
+            <ul class="check-list">
+                <li>Plan-friendly stations for push, pull, legs, and full-body days.</li>
+                <li>Demonstration links can stay attached to each exercise.</li>
+                <li>Set, rep, and weight logs keep progress visible over time.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

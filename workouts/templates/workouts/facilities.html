@@ -1,0 +1,64 @@
+{% extends 'workouts/base.html' %}
+
+{% block title %}Facilities | FitTrack{% endblock %}
+
+{% block heading %}
+<section class="page-hero mb-5" aria-labelledby="facilities-title">
+    <div class="page-hero-copy">
+        <span class="eyebrow">Training environment</span>
+        <h1 id="facilities-title">Facilities</h1>
+        <p>A practical gym setting for focused lifts, logged sessions, plan work, and consistent training habits.</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="{% url 'workouts:free_trial' %}">
+                <i class="fas fa-door-open me-2"></i>Visit With a Trial
+            </a>
+            <a class="btn btn-outline-light btn-lg" href="{% url 'workouts:equipment' %}">
+                <i class="fas fa-weight-hanging me-2"></i>See Equipment
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="content-band">
+    <div class="stat-grid">
+        <div class="stat-box">
+            <strong>24/7</strong>
+            <span>Training mindset</span>
+        </div>
+        <div class="stat-box">
+            <strong>4</strong>
+            <span>Core zones</span>
+        </div>
+        <div class="stat-box">
+            <strong>1</strong>
+            <span>Logged plan</span>
+        </div>
+        <div class="stat-box">
+            <strong>3</strong>
+            <span>Trial days</span>
+        </div>
+    </div>
+</section>
+
+<section class="content-band">
+    <div class="feature-grid">
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-border-all"></i></span>
+            <h2>Strength Floor</h2>
+            <p>Open work space for racks, benches, dumbbells, and plate-loaded training.</p>
+        </article>
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-running"></i></span>
+            <h2>Conditioning Zone</h2>
+            <p>Warmups, finishers, intervals, and cardio blocks that fit into tracked sessions.</p>
+        </article>
+        <article class="feature-card">
+            <span class="quick-action-icon"><i class="fas fa-clipboard-check"></i></span>
+            <h2>Plan Station</h2>
+            <p>Review the day, check the plan, and keep training notes clear before you start.</p>
+        </article>
+    </div>
+</section>
+{% endblock %}

@@ -17,7 +17,7 @@
                 {% if workout.demonstration_video_url %}
                 <a href="{{ workout.demonstration_video_url }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">View Demonstration</a>
                 {% endif %}
-                <p class="text-muted mt-3">Created by: {{ workout.created_by.username if workout.created_by else 'Unknown' }}</p>
+                <p class="text-muted mt-3">Created by: {% if workout.created_by %}{{ workout.created_by.username }}{% else %}Unknown{% endif %}</p>
             </div>
         </div>
         <div class="card shadow-sm">

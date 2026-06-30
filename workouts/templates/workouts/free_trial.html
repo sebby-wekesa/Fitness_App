@@ -1,0 +1,64 @@
+{% extends 'workouts/base.html' %}
+
+{% block title %}3 Day Free Trial | FitTrack{% endblock %}
+
+{% block heading %}
+<section class="page-hero mb-5" aria-labelledby="trial-title">
+    <div class="page-hero-copy">
+        <span class="eyebrow">Free access pass</span>
+        <h1 id="trial-title">3 Day Free Trial</h1>
+        <p>Try the training flow for three days: walk the floor, build a plan, and log a real workout before committing.</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="{% url 'workouts:register' %}">
+                <i class="fas fa-ticket-alt me-2"></i>Claim Trial
+            </a>
+            <a class="btn btn-outline-light btn-lg" href="{% url 'workouts:facilities' %}">
+                <i class="fas fa-map-marker-alt me-2"></i>View Facilities
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="content-band">
+    <div class="stat-grid">
+        <div class="stat-box">
+            <strong>Day 1</strong>
+            <span>Walk the floor</span>
+        </div>
+        <div class="stat-box">
+            <strong>Day 2</strong>
+            <span>Try a plan</span>
+        </div>
+        <div class="stat-box">
+            <strong>Day 3</strong>
+            <span>Log results</span>
+        </div>
+        <div class="stat-box">
+            <strong>Free</strong>
+            <span>No pressure</span>
+        </div>
+    </div>
+</section>
+
+<section class="content-band">
+    <div class="split-panel">
+        <div class="split-panel-media" role="img" aria-label="Premium training floor"></div>
+        <div class="split-panel-copy">
+            <span class="eyebrow">What is included</span>
+            <h2>Three days to test the system.</h2>
+            <p>The trial is built around a simple promise: see the space, train once or twice, and decide with actual experience.</p>
+            <ul class="check-list">
+                <li>Explore equipment and training zones.</li>
+                <li>Create an account and save your first workout plan.</li>
+                <li>Start a session and record sets, reps, and notes.</li>
+            </ul>
+            <div class="hero-actions mt-4">
+                <a class="btn btn-primary btn-lg" href="{% url 'workouts:register' %}">Start Free Trial</a>
+                <a class="btn btn-outline-light btn-lg" href="{% url 'login' %}">Already a Member</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

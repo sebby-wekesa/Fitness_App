@@ -1,69 +1,845 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FitTrack - Your Personal Fitness App{% endblock %}</title>
+    <title>{% block title %}FitTrack - Training Log{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --fit-bg: #030303;
+            --fit-panel: #0b0b0d;
+            --fit-panel-strong: #111114;
+            --fit-line: rgba(255, 255, 255, 0.1);
+            --fit-line-strong: rgba(185, 28, 28, 0.54);
+            --fit-red: #b91c1c;
+            --fit-red-hot: #ef3b2d;
+            --fit-steel: #a3a8b0;
+            --fit-ash: #d7d9dd;
+            --fit-white: #ffffff;
+            --fit-radius: 6px;
+            --fit-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+            --fit-heading: "Oswald", "Arial Narrow", sans-serif;
+            --fit-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            letter-spacing: 0;
+        }
+
         body {
-            background: #f4f6fb;
+            background:
+                radial-gradient(circle at top left, rgba(185, 28, 28, 0.16), transparent 34rem),
+                linear-gradient(135deg, #030303 0%, #070707 48%, #111114 100%);
+            color: var(--fit-ash);
+            font-family: var(--fit-body);
             min-height: 100vh;
         }
+
+        body::before {
+            content: "";
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 46px 46px;
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 55%);
+            z-index: -1;
+        }
+
+        a {
+            color: var(--fit-red-hot);
+        }
+
+        a:hover {
+            color: #ff6257;
+        }
+
+        .site-nav {
+            background: rgba(0, 0, 0, 0.88);
+            border-bottom: 1px solid var(--fit-line-strong);
+            backdrop-filter: blur(16px);
+        }
+
         .navbar-brand {
+            align-items: center;
+            color: var(--fit-white) !important;
+            display: inline-flex;
+            font-family: var(--fit-heading);
+            font-size: 1.75rem;
             font-weight: 700;
-            letter-spacing: 0.03em;
+            letter-spacing: 0;
+            line-height: 1;
+            text-transform: uppercase;
         }
-        .hero-card {
-            background: linear-gradient(135deg, #0d6efd 0%, #0d6efd 100%);
-            color: white;
-            border: none;
-            box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.15);
+
+        .navbar-brand::before {
+            background: var(--fit-red);
+            content: "";
+            display: inline-block;
+            height: 1.7rem;
+            margin-right: 0.65rem;
+            transform: skewX(-14deg);
+            width: 0.42rem;
         }
+
+        .navbar-dark .navbar-nav .nav-link,
+        .navbar-text {
+            color: rgba(255, 255, 255, 0.66) !important;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover,
+        .navbar-dark .navbar-nav .nav-link:focus,
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: var(--fit-white) !important;
+        }
+
+        .navbar-dark .navbar-nav .nav-link.active {
+            position: relative;
+        }
+
+        .navbar-dark .navbar-nav .nav-link.active::after {
+            background: var(--fit-red);
+            bottom: 0.1rem;
+            content: "";
+            height: 2px;
+            left: 0.5rem;
+            position: absolute;
+            right: 0.5rem;
+        }
+
+        .nav-cta {
+            white-space: nowrap;
+        }
+
+        .page-shell {
+            max-width: 1320px;
+            padding-bottom: 4.5rem !important;
+            padding-top: 2rem !important;
+        }
+
+        .page-heading {
+            border-left: 4px solid var(--fit-red);
+            margin-bottom: 1.75rem;
+            padding-left: 1.25rem;
+        }
+
+        .page-heading h1,
+        .h3 {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-size: clamp(2.2rem, 5vw, 4.25rem);
+            font-weight: 700;
+            line-height: 0.95;
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        .text-muted {
+            color: var(--fit-steel) !important;
+        }
+
+        .fitness-hero {
+            background:
+                linear-gradient(90deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.68) 46%, rgba(0, 0, 0, 0.22) 100%),
+                linear-gradient(0deg, rgba(3, 3, 3, 0.96) 0%, rgba(3, 3, 3, 0.18) 58%),
+                url("{% static 'workouts/images/training-floor-hero.jpg' %}") center / cover;
+            border: 1px solid var(--fit-line);
+            border-radius: var(--fit-radius);
+            box-shadow: var(--fit-shadow);
+            min-height: min(68vh, 670px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fitness-hero::after {
+            background: var(--fit-red);
+            bottom: 0;
+            content: "";
+            height: 5px;
+            left: 0;
+            position: absolute;
+            width: 38%;
+        }
+
+        .fitness-hero-content {
+            max-width: 700px;
+            padding: clamp(2rem, 6vw, 5rem);
+            position: relative;
+            z-index: 1;
+        }
+
+        .eyebrow {
+            color: var(--fit-red-hot);
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .fitness-hero h1 {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-size: clamp(4rem, 12vw, 9.4rem);
+            font-weight: 700;
+            line-height: 0.82;
+            margin: 0 0 1.35rem;
+            max-width: 8ch;
+            text-transform: uppercase;
+        }
+
+        .fitness-hero p {
+            color: rgba(255, 255, 255, 0.76);
+            font-size: clamp(1rem, 2vw, 1.18rem);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            max-width: 36rem;
+        }
+
+        .hero-actions,
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .hero-metrics {
+            border-top: 1px solid var(--fit-line);
+            display: grid;
+            gap: 1px;
+            grid-template-columns: repeat(3, 1fr);
+            margin-top: 2.5rem;
+            max-width: 640px;
+        }
+
+        .hero-metric {
+            background: rgba(255, 255, 255, 0.045);
+            padding: 1.25rem;
+        }
+
+        .hero-metric strong {
+            color: var(--fit-white);
+            display: block;
+            font-family: var(--fit-heading);
+            font-size: clamp(2rem, 4vw, 3.35rem);
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .hero-metric span {
+            color: rgba(255, 255, 255, 0.56);
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-top: 0.35rem;
+            text-transform: uppercase;
+        }
+
+        .section-kicker {
+            color: var(--fit-red-hot);
+            font-family: var(--fit-heading);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
         .card {
-            border: none;
-            border-radius: 1rem;
-            box-shadow: 0 0.75rem 1.25rem rgba(18, 56, 96, 0.08);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+            border: 1px solid var(--fit-line);
+            border-radius: var(--fit-radius);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+            color: var(--fit-ash);
+            overflow: hidden;
+            transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
         }
+
+        .card:hover {
+            border-color: rgba(185, 28, 28, 0.46);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+            transform: translateY(-2px);
+        }
+
         .card-header {
-            background: #fff;
-            border-bottom: 1px solid #e9ecef;
+            background: rgba(0, 0, 0, 0.24);
+            border-bottom: 1px solid var(--fit-line);
+            color: var(--fit-white);
         }
+
+        .card-title,
+        .card-header h5,
+        .card h4,
+        .card h5 {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
         .btn-primary {
-            border-radius: 999px;
+            background: var(--fit-red);
+            border-color: var(--fit-red);
+            border-radius: 3px;
+            box-shadow: 0 0 24px rgba(185, 28, 28, 0.18);
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            letter-spacing: 0;
+            text-transform: uppercase;
         }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background: var(--fit-red-hot);
+            border-color: var(--fit-red-hot);
+            color: var(--fit-white);
+            box-shadow: 0 0 30px rgba(239, 59, 45, 0.34);
+        }
+
+        .btn-light,
+        .btn-outline-light,
+        .btn-outline-primary,
+        .btn-outline-secondary {
+            border-radius: 3px;
+            font-family: var(--fit-heading);
+            text-transform: uppercase;
+        }
+
+        .btn-light {
+            background: var(--fit-white);
+            border-color: var(--fit-white);
+            color: #050505;
+        }
+
+        .btn-outline-primary {
+            border-color: rgba(185, 28, 28, 0.7);
+            color: #ff6257;
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus {
+            background: var(--fit-red);
+            border-color: var(--fit-red);
+            color: var(--fit-white);
+        }
+
+        .btn-outline-secondary,
+        .btn-outline-light {
+            border-color: rgba(255, 255, 255, 0.28);
+            color: rgba(255, 255, 255, 0.78);
+        }
+
+        .btn-outline-secondary:hover,
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.52);
+            color: var(--fit-white);
+        }
+
         .form-control, .form-select {
-            border-radius: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.34);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 4px;
+            color: var(--fit-white);
         }
+
+        .form-control:focus,
+        .form-select:focus {
+            background-color: rgba(0, 0, 0, 0.45);
+            border-color: var(--fit-red-hot);
+            box-shadow: 0 0 0 0.2rem rgba(185, 28, 28, 0.22);
+            color: var(--fit-white);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.42);
+        }
+
+        label,
+        .form-label {
+            color: var(--fit-ash);
+            font-size: 0.82rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .form-check-input {
+            background-color: rgba(0, 0, 0, 0.45);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--fit-red);
+            border-color: var(--fit-red);
+        }
+
+        .workout-picker {
+            background: rgba(0, 0, 0, 0.32);
+            border: 1px solid var(--fit-line) !important;
+            border-radius: var(--fit-radius);
+        }
+
+        .badge {
+            border-radius: 3px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .bg-primary,
+        .bg-success {
+            background-color: var(--fit-red) !important;
+        }
+
+        .bg-secondary {
+            background-color: rgba(255, 255, 255, 0.13) !important;
+            color: rgba(255, 255, 255, 0.78);
+        }
+
         .badge-pill {
             border-radius: 999px;
         }
-        .page-heading {
-            margin-bottom: 1.5rem;
+
+        .list-group-item {
+            background: transparent;
+            border-color: var(--fit-line);
+            color: var(--fit-ash);
         }
+
+        .list-group-item-action:hover,
+        .list-group-item-action:focus {
+            background: rgba(185, 28, 28, 0.12);
+            color: var(--fit-white);
+        }
+
+        .alert {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--fit-line);
+            color: var(--fit-white);
+        }
+
+        .alert-info {
+            border-left: 4px solid #38bdf8;
+        }
+
+        .alert-danger {
+            border-left: 4px solid var(--fit-red-hot);
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        .training-panel {
+            background: #070707;
+            border: 1px solid var(--fit-line);
+            border-radius: var(--fit-radius);
+            overflow: hidden;
+        }
+
+        .training-panel-header {
+            align-items: center;
+            border-bottom: 1px solid var(--fit-line);
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+        }
+
+        .training-panel-title {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-size: 1.15rem;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .training-panel-body {
+            padding: 1.25rem;
+        }
+
+        .quick-action-card {
+            min-height: 100%;
+            position: relative;
+        }
+
+        .quick-action-card::before {
+            background: var(--fit-red);
+            content: "";
+            height: 4px;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 4rem;
+        }
+
+        .quick-action-icon {
+            align-items: center;
+            background: rgba(185, 28, 28, 0.14);
+            border: 1px solid rgba(185, 28, 28, 0.38);
+            border-radius: 50%;
+            color: #ff6257;
+            display: inline-flex;
+            height: 2.8rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+            width: 2.8rem;
+        }
+
+        .dashboard-strip {
+            background: #050505;
+            border: 1px solid var(--fit-line);
+            border-radius: var(--fit-radius);
+            display: grid;
+            gap: 1px;
+            grid-template-columns: repeat(3, 1fr);
+            overflow: hidden;
+        }
+
+        .dashboard-strip-item {
+            background: rgba(255, 255, 255, 0.045);
+            padding: 1.25rem;
+        }
+
+        .dashboard-strip-item span {
+            color: var(--fit-steel);
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+        }
+
+        .dashboard-strip-item strong {
+            color: var(--fit-white);
+            display: block;
+            font-family: var(--fit-heading);
+            font-size: 1.75rem;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .page-hero {
+            align-items: flex-end;
+            background:
+                linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.62) 48%, rgba(0, 0, 0, 0.18) 100%),
+                linear-gradient(0deg, rgba(3, 3, 3, 0.98) 0%, rgba(3, 3, 3, 0.12) 70%),
+                url("{% static 'workouts/images/training-floor-hero.jpg' %}") center / cover;
+            border: 1px solid var(--fit-line);
+            border-radius: var(--fit-radius);
+            box-shadow: var(--fit-shadow);
+            display: flex;
+            min-height: 440px;
+            overflow: hidden;
+            padding: clamp(1.5rem, 5vw, 4rem);
+            position: relative;
+        }
+
+        .page-hero::after {
+            background: var(--fit-red);
+            bottom: 0;
+            content: "";
+            height: 5px;
+            left: 0;
+            position: absolute;
+            width: 22rem;
+            max-width: 56%;
+        }
+
+        .page-hero-copy {
+            max-width: 720px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-hero h1 {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-size: clamp(3.8rem, 10vw, 8rem);
+            line-height: 0.86;
+            margin: 0 0 1rem;
+            text-transform: uppercase;
+        }
+
+        .page-hero p {
+            color: rgba(255, 255, 255, 0.76);
+            font-size: clamp(1rem, 2vw, 1.18rem);
+            line-height: 1.75;
+            margin: 0 0 1.75rem;
+            max-width: 44rem;
+        }
+
+        .content-band {
+            margin-top: 3rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .feature-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+            border: 1px solid var(--fit-line);
+            border-radius: var(--fit-radius);
+            min-height: 100%;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .feature-card::before {
+            background: var(--fit-red);
+            content: "";
+            height: 4px;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 4rem;
+        }
+
+        .feature-card h2,
+        .feature-card h3 {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-size: 1.55rem;
+            margin: 1rem 0 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .feature-card p {
+            color: var(--fit-steel);
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+        .feature-card .quick-action-icon {
+            margin-bottom: 0;
+        }
+
+        .split-panel {
+            background: #070707;
+            border: 1px solid var(--fit-line);
+            border-radius: var(--fit-radius);
+            display: grid;
+            gap: 0;
+            grid-template-columns: 0.9fr 1.1fr;
+            overflow: hidden;
+        }
+
+        .split-panel-media {
+            background:
+                linear-gradient(180deg, rgba(185, 28, 28, 0.05), rgba(0, 0, 0, 0.8)),
+                url("{% static 'workouts/images/training-floor-hero.jpg' %}") center / cover;
+            min-height: 360px;
+        }
+
+        .split-panel-copy {
+            padding: clamp(1.5rem, 4vw, 3rem);
+        }
+
+        .split-panel-copy h2 {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            line-height: 0.96;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .split-panel-copy p,
+        .check-list {
+            color: var(--fit-steel);
+            line-height: 1.75;
+        }
+
+        .check-list {
+            list-style: none;
+            margin: 1.5rem 0 0;
+            padding: 0;
+        }
+
+        .check-list li {
+            border-top: 1px solid var(--fit-line);
+            padding: 0.9rem 0 0.9rem 2rem;
+            position: relative;
+        }
+
+        .check-list li::before {
+            color: var(--fit-red-hot);
+            content: "+";
+            font-family: var(--fit-heading);
+            font-size: 1.3rem;
+            left: 0;
+            line-height: 1;
+            position: absolute;
+            top: 0.82rem;
+        }
+
+        .stat-grid {
+            background: #050505;
+            border: 1px solid var(--fit-line);
+            border-radius: var(--fit-radius);
+            display: grid;
+            gap: 1px;
+            grid-template-columns: repeat(4, 1fr);
+            overflow: hidden;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.045);
+            padding: 1.25rem;
+        }
+
+        .stat-box strong {
+            color: var(--fit-white);
+            display: block;
+            font-family: var(--fit-heading);
+            font-size: clamp(2rem, 5vw, 3.75rem);
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .stat-box span {
+            color: var(--fit-steel);
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 800;
+            margin-top: 0.35rem;
+            text-transform: uppercase;
+        }
+
+        .trial-callout {
+            background:
+                linear-gradient(135deg, rgba(185, 28, 28, 0.94), rgba(111, 10, 10, 0.94)),
+                #b91c1c;
+            border-radius: var(--fit-radius);
+            color: var(--fit-white);
+            padding: clamp(1.5rem, 5vw, 3rem);
+        }
+
+        .trial-callout h2 {
+            color: var(--fit-white);
+            font-family: var(--fit-heading);
+            font-size: clamp(2.4rem, 6vw, 5rem);
+            line-height: 0.9;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .trial-callout p {
+            color: rgba(255, 255, 255, 0.82);
+            max-width: 42rem;
+        }
+
         .footer {
-            margin-top: 4rem;
+            background: #000;
+            border-top: 1px solid var(--fit-line-strong) !important;
+            color: var(--fit-steel);
+            margin-top: 0;
             padding: 2rem 0;
-            background: #fff;
-            color: #6c757d;
+        }
+
+        @media (max-width: 991.98px) {
+            .fitness-hero {
+                min-height: 620px;
+            }
+
+            .hero-metrics,
+            .dashboard-strip,
+            .feature-grid,
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .split-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .split-panel-media {
+                min-height: 260px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .page-shell {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .fitness-hero {
+                min-height: 580px;
+            }
+
+            .fitness-hero h1 {
+                font-size: clamp(3.4rem, 20vw, 5rem);
+            }
+
+            .fitness-hero-content {
+                padding: 1.5rem;
+            }
+
+            .page-hero {
+                min-height: 420px;
+                padding: 1.5rem;
+            }
+
+            .page-heading h1,
+            .h3 {
+                font-size: 2.2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark site-nav sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'workouts:index' %}">FitTrack</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'workouts:workout_list' %}">Workouts</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'workouts:index' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'workouts:workoutplan_list' %}">Plans</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'equipment' %}active{% endif %}" href="{% url 'workouts:equipment' %}">Equipment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'coaching' %}active{% endif %}" href="{% url 'workouts:coaching' %}">Coaching</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'members' %}active{% endif %}" href="{% url 'workouts:members' %}">Members</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'facilities' %}active{% endif %}" href="{% url 'workouts:facilities' %}">Facilities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'workout_list' %}active{% endif %}" href="{% url 'workouts:workout_list' %}">Workouts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'workoutplan_list' %}active{% endif %}" href="{% url 'workouts:workoutplan_list' %}">Plans</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
@@ -75,6 +851,9 @@
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav align-items-center">
+                    <li class="nav-item me-lg-2 mb-2 mb-lg-0">
+                        <a class="btn btn-primary btn-sm nav-cta" href="{% url 'workouts:free_trial' %}">3 Day Free Trial</a>
+                    </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item me-3">
                         <span class="navbar-text text-light">Hello, {{ user.username }}</span>
@@ -89,10 +868,10 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="btn btn-outline-light btn-sm rounded-pill me-2" href="{% url 'login' %}">Login</a>
+                        <a class="btn btn-outline-light btn-sm me-2" href="{% url 'login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-primary btn-sm rounded-pill" href="{% url 'workouts:register' %}">Register</a>
+                        <a class="btn btn-primary btn-sm" href="{% url 'workouts:register' %}">Register</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -100,10 +879,10 @@
         </div>
     </nav>
 
-    <main class="container py-4">
+    <main class="container-xxl py-4 page-shell">
         {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4" role="alert">
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
@@ -119,8 +898,8 @@
 
     <footer class="footer border-top">
         <div class="container text-center">
-            <p class="mb-1">FitTrack &copy; {% now "Y" %}. Built for simple workout tracking and plan management.</p>
-            <small class="text-muted">Designed with Bootstrap and a clean, mobile-first layout.</small>
+            <p class="mb-1">FitTrack &copy; {% now "Y" %}. Training logs, reusable plans, and session notes.</p>
+            <small class="text-muted">A focused workout tracker with an athletic club visual system.</small>
         </div>
     </footer>
 
