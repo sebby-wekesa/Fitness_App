@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.utils import timezone
 from .models import Workout, WorkoutPlan, WorkoutPlanItem, WorkoutSession, Set
 from .forms import WorkoutForm, WorkoutPlanForm, WorkoutSessionForm, SetForm, CustomUserCreationForm
@@ -10,10 +10,20 @@ from .forms import WorkoutForm, WorkoutPlanForm, WorkoutSessionForm, SetForm, Cu
 def index(request):
     public_plans = WorkoutPlan.objects.filter(is_public=True)[:5]
     recent_workouts = Workout.objects.order_by('-created_at')[:5]
-    return render(request, 'workouts/index.html', {
+    context = {
         'public_plans': public_plans,
         'recent_workouts': recent_workouts
-    })
+    }
+    if request.user.is_authenticated:
+        context.update({
+            'my_workout_count': Workout.objects.filter(created_by=request.user).count(),
+            'my_plan_count': WorkoutPlan.objects.filter(creator=request.user).count(),
+            'my_session_count': WorkoutSession.objects.filter(user=request.user).count(),
+            'recent_sessions': WorkoutSession.objects.filter(
+                user=request.user
+            ).select_related('workout_plan').annotate(set_count=Count('sets'))[:5],
+        })
+    return render(request, 'workouts/index.html', context)
 
 
 def equipment(request):
@@ -94,14 +104,14 @@ def create_workoutplan(request):
 @login_required
 def start_session(request):
     if request.method == 'POST':
-        form = WorkoutSessionForm(request.POST)
+        form = WorkoutSessionForm(request.user, request.POST)
         if form.is_valid():
             session = form.save(commit=False)
             session.user = request.user
             session.save()
             return redirect('workouts:session_detail', pk=session.pk)
     else:
-        form = WorkoutSessionForm()
+        form = WorkoutSessionForm(request.user)
     return render(request, 'workouts/start_session.html', {'form': form})
 
 
@@ -109,7 +119,7 @@ def start_session(request):
 def session_detail(request, pk):
     session = get_object_or_404(WorkoutSession, pk=pk, user=request.user)
     if request.method == 'POST':
-        form = SetForm(request.POST)
+        form = SetForm(session, request.POST)
         if form.is_valid():
             set_instance = form.save(commit=False)
             set_instance.workout_session = session
@@ -117,7 +127,7 @@ def session_detail(request, pk):
             set_instance.save()
             return redirect('workouts:session_detail', pk=session.pk)
     else:
-        form = SetForm()
+        form = SetForm(session)
     return render(request, 'workouts/session_detail.html', {
         'session': session,
         'form': form

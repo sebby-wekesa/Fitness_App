@@ -4,6 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            try {
+                const savedTheme = localStorage.getItem('fittrack-theme');
+                if (savedTheme === 'light' || savedTheme === 'dark') {
+                    document.documentElement.dataset.theme = savedTheme;
+                }
+            } catch (error) {
+                // The dark theme remains the safe fallback if storage is unavailable.
+            }
+        })();
+    </script>
     <title>{% block title %}FitTrack - Training Log{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +24,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
+            color-scheme: dark;
             --fit-bg: #030303;
             --fit-panel: #0b0b0d;
             --fit-panel-strong: #111114;
@@ -478,6 +491,16 @@
             padding: 1.25rem;
         }
 
+        .empty-state {
+            border: 1px dashed rgba(255, 255, 255, 0.18);
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .empty-state p {
+            color: var(--fit-steel);
+        }
+
         .quick-action-card {
             min-height: 100%;
             position: relative;
@@ -760,6 +783,241 @@
             padding: 2rem 0;
         }
 
+        .theme-toggle {
+            align-items: center;
+            display: inline-flex;
+            gap: 0.45rem;
+            justify-content: center;
+            min-width: 7.5rem;
+        }
+
+        .password-input-wrap {
+            position: relative;
+        }
+
+        .password-input-wrap .form-control,
+        .password-input-wrap input[type="password"],
+        .password-input-wrap input[type="text"] {
+            padding-right: 3rem;
+        }
+
+        .password-toggle {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            border-radius: 4px;
+            color: var(--fit-steel);
+            display: inline-flex;
+            height: 2.5rem;
+            justify-content: center;
+            padding: 0;
+            position: absolute;
+            right: 0.35rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2.5rem;
+        }
+
+        .password-toggle:hover {
+            color: var(--fit-red-hot);
+        }
+
+        .password-toggle:focus-visible {
+            outline: 2px solid var(--fit-red-hot);
+            outline-offset: 2px;
+        }
+
+        /* Light mode keeps FitTrack's red training-floor accent, but moves the work surface to warm paper. */
+        html[data-theme="light"] {
+            color-scheme: light;
+            --fit-bg: #f4f0e8;
+            --fit-panel: #fffdf8;
+            --fit-panel-strong: #ebe5da;
+            --fit-line: rgba(24, 24, 24, 0.13);
+            --fit-line-strong: rgba(185, 28, 28, 0.36);
+            --fit-steel: #5f6670;
+            --fit-ash: #2d333a;
+            --fit-white: #171717;
+            --fit-shadow: 0 22px 60px rgba(62, 45, 25, 0.14);
+        }
+
+        html[data-theme="light"] body {
+            background:
+                radial-gradient(circle at top left, rgba(185, 28, 28, 0.08), transparent 34rem),
+                linear-gradient(135deg, #f4f0e8 0%, #fbfaf7 48%, #ebe5da 100%);
+        }
+
+        html[data-theme="light"] body::before {
+            background-image:
+                linear-gradient(rgba(24, 24, 24, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(24, 24, 24, 0.035) 1px, transparent 1px);
+        }
+
+        html[data-theme="light"] .site-nav {
+            background: rgba(255, 253, 248, 0.9);
+        }
+
+        html[data-theme="light"] .navbar-dark .navbar-nav .nav-link,
+        html[data-theme="light"] .navbar-text {
+            color: rgba(23, 23, 23, 0.66) !important;
+        }
+
+        html[data-theme="light"] .navbar-dark .navbar-nav .nav-link:hover,
+        html[data-theme="light"] .navbar-dark .navbar-nav .nav-link:focus,
+        html[data-theme="light"] .navbar-dark .navbar-nav .nav-link.active {
+            color: var(--fit-white) !important;
+        }
+
+        html[data-theme="light"] .navbar-toggler {
+            border-color: rgba(23, 23, 23, 0.25);
+        }
+
+        html[data-theme="light"] .navbar-toggler-icon {
+            filter: invert(1);
+        }
+
+        html[data-theme="light"] .fitness-hero h1,
+        html[data-theme="light"] .fitness-hero p,
+        html[data-theme="light"] .fitness-hero .hero-metric strong,
+        html[data-theme="light"] .page-hero h1,
+        html[data-theme="light"] .page-hero p {
+            color: #fff;
+        }
+
+        html[data-theme="light"] .fitness-hero .hero-metric span,
+        html[data-theme="light"] .page-hero .eyebrow {
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        html[data-theme="light"] .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 253, 248, 0.8));
+            box-shadow: 0 18px 50px rgba(62, 45, 25, 0.08);
+        }
+
+        html[data-theme="light"] .card:hover {
+            box-shadow: 0 24px 70px rgba(62, 45, 25, 0.13);
+        }
+
+        html[data-theme="light"] .card-header {
+            background: rgba(235, 229, 218, 0.72);
+        }
+
+        html[data-theme="light"] .btn-outline-light,
+        html[data-theme="light"] .btn-outline-secondary {
+            border-color: rgba(23, 23, 23, 0.25);
+            color: rgba(23, 23, 23, 0.78);
+        }
+
+        html[data-theme="light"] .btn-outline-light:hover,
+        html[data-theme="light"] .btn-outline-secondary:hover {
+            background: rgba(23, 23, 23, 0.07);
+            border-color: rgba(23, 23, 23, 0.42);
+            color: var(--fit-white);
+        }
+
+        html[data-theme="light"] .fitness-hero .btn-outline-light,
+        html[data-theme="light"] .page-hero .btn-outline-light,
+        html[data-theme="light"] .trial-callout .btn-outline-light {
+            border-color: rgba(255, 255, 255, 0.44);
+            color: #fff;
+        }
+
+        html[data-theme="light"] .fitness-hero .btn-outline-light:hover,
+        html[data-theme="light"] .page-hero .btn-outline-light:hover,
+        html[data-theme="light"] .trial-callout .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.72);
+            color: #fff;
+        }
+
+        html[data-theme="light"] .form-control,
+        html[data-theme="light"] .form-select {
+            background-color: rgba(255, 255, 255, 0.86);
+            border-color: rgba(23, 23, 23, 0.18);
+            color: var(--fit-white);
+        }
+
+        html[data-theme="light"] .form-control:focus,
+        html[data-theme="light"] .form-select:focus {
+            background-color: #fff;
+            color: var(--fit-white);
+        }
+
+        html[data-theme="light"] .form-control::placeholder {
+            color: rgba(23, 23, 23, 0.42);
+        }
+
+        html[data-theme="light"] .form-check-input {
+            background-color: rgba(255, 255, 255, 0.86);
+            border-color: rgba(23, 23, 23, 0.3);
+        }
+
+        html[data-theme="light"] .workout-picker {
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        html[data-theme="light"] .bg-secondary {
+            background-color: rgba(23, 23, 23, 0.09) !important;
+            color: rgba(23, 23, 23, 0.72);
+        }
+
+        html[data-theme="light"] .list-group-item {
+            color: var(--fit-ash);
+        }
+
+        html[data-theme="light"] .list-group-item-action:hover,
+        html[data-theme="light"] .list-group-item-action:focus {
+            background: rgba(185, 28, 28, 0.08);
+            color: var(--fit-white);
+        }
+
+        html[data-theme="light"] .alert {
+            background: rgba(255, 255, 255, 0.68);
+            color: var(--fit-white);
+        }
+
+        html[data-theme="light"] .btn-close {
+            filter: none;
+        }
+
+        html[data-theme="light"] .training-panel,
+        html[data-theme="light"] .split-panel {
+            background: #fffdf8;
+        }
+
+        html[data-theme="light"] .empty-state {
+            border-color: rgba(23, 23, 23, 0.18);
+        }
+
+        html[data-theme="light"] .dashboard-strip,
+        html[data-theme="light"] .stat-grid {
+            background: #ebe5da;
+        }
+
+        html[data-theme="light"] .dashboard-strip-item,
+        html[data-theme="light"] .stat-box,
+        html[data-theme="light"] .feature-card {
+            background: rgba(255, 255, 255, 0.58);
+        }
+
+        html[data-theme="light"] .footer {
+            background: #ebe5da;
+        }
+
+        html[data-theme="light"] .theme-toggle {
+            border-color: rgba(23, 23, 23, 0.25);
+            color: rgba(23, 23, 23, 0.78);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
         @media (max-width: 991.98px) {
             .fitness-hero {
                 min-height: 620px;
@@ -852,6 +1110,12 @@
                 </ul>
                 <ul class="navbar-nav align-items-center">
                     <li class="nav-item me-lg-2 mb-2 mb-lg-0">
+                        <button type="button" class="theme-toggle btn btn-outline-light btn-sm" data-theme-toggle aria-pressed="false" aria-label="Switch to light mode">
+                            <i class="fas fa-sun" data-theme-icon aria-hidden="true"></i>
+                            <span data-theme-label>Light mode</span>
+                        </button>
+                    </li>
+                    <li class="nav-item me-lg-2 mb-2 mb-lg-0">
                         <a class="btn btn-primary btn-sm nav-cta" href="{% url 'workouts:free_trial' %}">3 Day Free Trial</a>
                     </li>
                     {% if user.is_authenticated %}
@@ -904,5 +1168,63 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            document.querySelectorAll('input[type="password"]').forEach(function (input) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'password-input-wrap';
+                input.parentNode.insertBefore(wrapper, input);
+                wrapper.appendChild(input);
+
+                const toggle = document.createElement('button');
+                toggle.type = 'button';
+                toggle.className = 'password-toggle';
+                toggle.setAttribute('aria-label', 'Show password');
+                toggle.setAttribute('aria-pressed', 'false');
+                toggle.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i>';
+                wrapper.appendChild(toggle);
+
+                toggle.addEventListener('click', function () {
+                    const isHidden = input.type === 'password';
+                    input.type = isHidden ? 'text' : 'password';
+                    toggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+                    toggle.setAttribute('aria-pressed', String(isHidden));
+                    toggle.querySelector('i').className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+                    input.focus();
+                });
+            });
+        })();
+    </script>
+    <script>
+        (function () {
+            const root = document.documentElement;
+            const toggle = document.querySelector('[data-theme-toggle]');
+            if (!toggle) return;
+
+            const icon = toggle.querySelector('[data-theme-icon]');
+            const label = toggle.querySelector('[data-theme-label]');
+
+            function syncThemeToggle() {
+                const isLight = root.dataset.theme === 'light';
+                toggle.setAttribute('aria-pressed', String(isLight));
+                toggle.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+                icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+                label.textContent = isLight ? 'Dark mode' : 'Light mode';
+            }
+
+            toggle.addEventListener('click', function () {
+                const nextTheme = root.dataset.theme === 'light' ? 'dark' : 'light';
+                root.dataset.theme = nextTheme;
+                try {
+                    localStorage.setItem('fittrack-theme', nextTheme);
+                } catch (error) {
+                    // Theme still applies for the current page when storage is unavailable.
+                }
+                syncThemeToggle();
+            });
+
+            syncThemeToggle();
+        })();
+    </script>
 </body>
 </html>

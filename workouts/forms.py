@@ -1,7 +1,18 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordResetForm, UserCreationForm
 from django.contrib.auth.models import User
+from django.db.models import Q
 from .models import Workout, WorkoutPlan, WorkoutSession, Set
+
+
+class StyledPasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control',
+            'autocomplete': 'email',
+            'placeholder': 'you@example.com',
+        })
 
 class WorkoutForm(forms.ModelForm):
     class Meta:
@@ -33,6 +44,12 @@ class WorkoutPlanForm(forms.ModelForm):
         }
 
 class WorkoutSessionForm(forms.ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['workout_plan'].queryset = WorkoutPlan.objects.filter(
+            Q(creator=user) | Q(is_public=True)
+        ).distinct()
+
     class Meta:
         model = WorkoutSession
         fields = ['workout_plan', 'notes']
@@ -42,6 +59,14 @@ class WorkoutSessionForm(forms.ModelForm):
         }
 
 class SetForm(forms.ModelForm):
+    def __init__(self, session, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['workout'].queryset = Workout.objects.all()
+        if session.workout_plan:
+            self.fields['workout'].queryset = Workout.objects.filter(
+                plans=session.workout_plan
+            )
+
     class Meta:
         model = Set
         fields = ['workout', 'weight_kg', 'reps']
@@ -52,12 +77,20 @@ class SetForm(forms.ModelForm):
         }
 
 class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'autocomplete': 'email',
+            'placeholder': 'you@example.com',
+        }),
+    )
     first_name = forms.CharField(max_length=30, required=False, label='First name', widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(max_length=30, required=False, label='Last name', widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'password1': forms.PasswordInput(attrs={'class': 'form-control'}),

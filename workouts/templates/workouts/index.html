@@ -48,7 +48,7 @@
         {% if user.is_authenticated %}
         <div class="mb-4">
             <p class="section-kicker">Training console</p>
-            <h2 class="section-title">Next Move</h2>
+            <h2 class="section-title">Welcome back, {{ user.first_name|default:user.username }}</h2>
         </div>
         <div class="row gy-4">
             <div class="col-md-4">
@@ -86,23 +86,52 @@
         <div class="training-panel mt-4">
             <div class="training-panel-header">
                 <h4 class="training-panel-title">Quick Progress</h4>
-                <span class="badge bg-secondary">Live after logging</span>
+                <span class="badge bg-secondary">Your numbers</span>
             </div>
             <div class="training-panel-body">
                 <div class="dashboard-strip">
                     <div class="dashboard-strip-item">
-                        <span>Session summary</span>
-                        <strong>Ready</strong>
+                        <span>Sessions logged</span>
+                        <strong>{{ my_session_count }}</strong>
                     </div>
                     <div class="dashboard-strip-item">
-                        <span>Plan status</span>
-                        <strong>Open</strong>
+                        <span>Your plans</span>
+                        <strong>{{ my_plan_count }}</strong>
                     </div>
                     <div class="dashboard-strip-item">
-                        <span>Library</span>
-                        <strong>Growing</strong>
+                        <span>Your exercises</span>
+                        <strong>{{ my_workout_count }}</strong>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="training-panel mt-4">
+            <div class="training-panel-header">
+                <h4 class="training-panel-title">Recent Sessions</h4>
+                <span class="badge bg-secondary">{{ my_session_count }}</span>
+            </div>
+            <div class="training-panel-body">
+                {% if recent_sessions %}
+                <div class="list-group list-group-flush">
+                    {% for session in recent_sessions %}
+                    <a href="{% url 'workouts:session_detail' session.pk %}" class="list-group-item list-group-item-action px-0">
+                        <div class="d-flex justify-content-between align-items-center gap-3">
+                            <div>
+                                <strong>{% if session.workout_plan %}{{ session.workout_plan.name }}{% else %}Open session{% endif %}</strong>
+                                <p class="mb-0 text-muted">{{ session.date|date:'M j, Y · g:i A' }}</p>
+                            </div>
+                            <span class="badge bg-secondary">{{ session.set_count }} sets</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p class="mb-2">Your first session is waiting.</p>
+                    <a href="{% url 'workouts:start_session' %}" class="btn btn-primary btn-sm">Start a Session</a>
+                </div>
+                {% endif %}
             </div>
         </div>
         {% else %}
